@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { BookOpenIcon, LinkIcon, SearchIcon } from 'lucide-react';
 import { PageHeader } from '../components/common/PageHeader';
 import { Panel } from '../components/common/Panel';
@@ -13,7 +14,10 @@ const Q = { GOOD: ['OK', 'مناسب', 'Good'], MEDIUM: ['WARN', 'متوسط', '
 export function Dictionary() {
   const { tr, tx } = useLocale();
   const [q, setQ] = useState('');
-  const [selId, setSelId] = useState(dictionary[0].id);
+  const navigate = useNavigate();
+  const [params, setParams] = useSearchParams();
+  const selId = params.get('id') ?? dictionary[0].id;
+  const setSelId = (id: string) => setParams({ id });
   const rows = useMemo(() => {
     const s = q.trim().toLowerCase();
     if (!s) return dictionary;
@@ -101,7 +105,7 @@ export function Dictionary() {
                   <button
                     key={r}
                     type="button"
-                    onClick={() => !isKpi && setSelId(r)}
+                    onClick={() => (isKpi ? navigate(`/kpi?id=${r}`) : setSelId(r))}
                     title={label ? tx(label.name) : undefined}
                     className={`flex items-center gap-1 border px-1.5 py-0.5 text-2xs transition-colors duration-150 ${isKpi ? 'border-signal-forecast/30 text-signal-forecast' : 'border-elec-400/30 text-elec-300 hover:bg-elec-400/10'}`}>
                     

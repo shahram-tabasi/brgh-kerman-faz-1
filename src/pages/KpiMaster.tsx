@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Area, CartesianGrid, ComposedChart, Line, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { FunctionSquareIcon, TargetIcon } from 'lucide-react';
 import { PageHeader } from '../components/common/PageHeader';
@@ -21,7 +21,9 @@ const CAT: Record<KpiCategory, [string, string]> = {
   projects: ['پروژه', 'Projects'],
   finance: ['مالی', 'Finance'],
   customers: ['مشترکین', 'Customers'],
-  data: ['کیفیت داده', 'Data quality']
+  data: ['کیفیت داده', 'Data quality'],
+  platform: ['عملکرد سامانه', 'Platform performance'],
+  management: ['مدیریتی (دستاورد)', 'Management benefit']
 };
 
 export function KpiMaster() {
@@ -102,6 +104,10 @@ export function KpiMaster() {
               <dt className="text-slate-500">{tr('تعریف', 'Definition')}</dt><dd className="text-slate-300">{tx(k.definition)}</dd>
               <dt className="text-slate-500">{tr('فرمول', 'Formula')}</dt><dd className="font-mono text-2xs text-elec-300" dir="ltr">{k.formula}</dd>
               <dt className="text-slate-500">{tr('منابع داده', 'Data sources')}</dt><dd className="flex flex-wrap gap-1">{(k.sources[0] === 'ALL' ? [tr('همه منابع', 'All sources')] : k.sources).map((s) => <Tag key={s} tone="elec">{s}</Tag>)}</dd>
+              <dt className="text-slate-500">{tr('داده‌های موردنیاز', 'Required data')}</dt>
+              <dd className="flex flex-wrap gap-1">
+                {(k.data ?? []).length ? (k.data ?? []).map((d) => <Link key={d} to={`/dictionary?id=${d}`} className="border border-signal-forecast/30 px-1.5 py-0.5 font-mono text-2xs text-signal-forecast hover:bg-signal-forecast/10">{d}</Link>) : <span className="text-2xs text-slate-500">{tr('متاداده و لاگ‌های پلتفرم', 'Platform metadata & logs')}</span>}
+              </dd>
               <dt className="text-slate-500">{tr('دوره محاسبه', 'Period')}</dt><dd className="text-slate-300">{tx(k.period)}</dd>
               <dt className="text-slate-500">{tr('واحد', 'Unit')}</dt><dd className="text-slate-300">{tx(k.unit)}</dd>
               <dt className="text-slate-500">{tr('جهت مطلوب', 'Better when')}</dt><dd className="text-slate-300">{k.direction === 'higher' ? tr('بیشتر بهتر', 'higher') : tr('کمتر بهتر', 'lower')}</dd>

@@ -1,59 +1,71 @@
 import type { Region } from '../types';
 
 /**
- * Service regions (مدیریت‌های برق شهرستان) of South Kerman Electricity Distribution Co.
- * Geography is real; every numeric attribute is synthetic demo data.
+ * مدیریت‌های برق شهرستان — شرکت توزیع نیروی برق جنوب استان کرمان
+ *
+ * Calibrated to public figures (see README › «منابع داده‌های واقعی»):
+ *  - 16 county power-management units (Sirjan, Bam, Jiroft, Baft, Bardsir, Kahnuj, Manujan, Anbarabad,
+ *    Rudbar-e Jonub, Rigan, Qaleh Ganj, Rabor, Arzuiyeh, Narmashir, Fahraj, Faryab)
+ *  - > 720,000 customers, ~1,800 MW summer peak (1404)
+ *  - residential + agricultural ≈ 80% of consumption; national distribution loss ≈ 10.6%
+ * Customer counts are split by county population share; peak by load mix (agri wells / industry).
+ * Per-unit reliability, service and financial values are realistic estimates, not official statistics.
  */
-export const regions: Region[] = [
-{
-  id: 'JRF', name: { fa: 'جیرفت', en: 'Jiroft' },
-  customers: 128400, peakMW: 512, capacityMW: 590, lossPct: 11.8, saidi: 96, saifi: 1.42,
-  outages: 214, outageMinutes: 9120, faults: 168, restoreMin: 52, requests: 3910, responseHrs: 31,
-  complaints: 412, satisfaction: 78, budgetBn: 4280, spentBn: 3120, collectionPct: 88, projects: 14, delayedProjects: 3
-},
-{
-  id: 'ANB', name: { fa: 'عنبرآباد', en: 'Anbarabad' },
-  customers: 54200, peakMW: 298, capacityMW: 318, lossPct: 13.9, saidi: 138, saifi: 2.05,
-  outages: 176, outageMinutes: 9840, faults: 141, restoreMin: 66, requests: 1720, responseHrs: 44,
-  complaints: 265, satisfaction: 69, budgetBn: 2140, spentBn: 1810, collectionPct: 81, projects: 9, delayedProjects: 3
-},
-{
-  id: 'KHN', name: { fa: 'کهنوج', en: 'Kahnuj' },
-  customers: 61800, peakMW: 276, capacityMW: 322, lossPct: 12.6, saidi: 112, saifi: 1.71,
-  outages: 158, outageMinutes: 7410, faults: 122, restoreMin: 58, requests: 1980, responseHrs: 36,
-  complaints: 238, satisfaction: 74, budgetBn: 2360, spentBn: 1640, collectionPct: 84, projects: 10, delayedProjects: 2
-},
-{
-  id: 'RJN', name: { fa: 'رودبار جنوب', en: 'Rudbar-e Jonub' },
-  customers: 49600, peakMW: 241, capacityMW: 252, lossPct: 15.2, saidi: 164, saifi: 2.38,
-  outages: 192, outageMinutes: 11260, faults: 149, restoreMin: 74, requests: 1530, responseHrs: 52,
-  complaints: 301, satisfaction: 63, budgetBn: 1980, spentBn: 1750, collectionPct: 76, projects: 8, delayedProjects: 4
-},
-{
-  id: 'QGJ', name: { fa: 'قلعه‌گنج', en: 'Qaleh Ganj' },
-  customers: 38900, peakMW: 186, capacityMW: 214, lossPct: 14.1, saidi: 129, saifi: 1.96,
-  outages: 131, outageMinutes: 6980, faults: 104, restoreMin: 69, requests: 1170, responseHrs: 47,
-  complaints: 187, satisfaction: 67, budgetBn: 1520, spentBn: 1090, collectionPct: 79, projects: 7, delayedProjects: 2
-},
-{
-  id: 'MNJ', name: { fa: 'منوجان', en: 'Manujan' },
-  customers: 41200, peakMW: 204, capacityMW: 238, lossPct: 13.4, saidi: 121, saifi: 1.84,
-  outages: 124, outageMinutes: 6150, faults: 97, restoreMin: 61, requests: 1240, responseHrs: 41,
-  complaints: 176, satisfaction: 71, budgetBn: 1610, spentBn: 1130, collectionPct: 82, projects: 7, delayedProjects: 1
-},
-{
-  id: 'FRB', name: { fa: 'فاریاب', en: 'Faryab' },
-  customers: 22700, peakMW: 118, capacityMW: 146, lossPct: 12.2, saidi: 104, saifi: 1.58,
-  outages: 72, outageMinutes: 3260, faults: 55, restoreMin: 55, requests: 690, responseHrs: 38,
-  complaints: 88, satisfaction: 75, budgetBn: 930, spentBn: 610, collectionPct: 86, projects: 5, delayedProjects: 1
-},
-{
-  id: 'ARZ', name: { fa: 'ارزوئیه', en: 'Arzuiyeh' },
-  customers: 26300, peakMW: 132, capacityMW: 168, lossPct: 10.9, saidi: 88, saifi: 1.29,
-  outages: 69, outageMinutes: 2870, faults: 51, restoreMin: 48, requests: 760, responseHrs: 29,
-  complaints: 79, satisfaction: 80, budgetBn: 1040, spentBn: 720, collectionPct: 90, projects: 5, delayedProjects: 0
-}];
+type Row = [
+  id: string, fa: string, en: string,
+  customers: number, peakMW: number, capacityMW: number, lossPct: number,
+  saidi: number, saifi: number, restoreMin: number,
+  responseHrs: number, satisfaction: number, collectionPct: number,
+  budgetBn: number, spentBn: number, projects: number, delayed: number];
 
+const ROWS: Row[] = [
+['SRJ', 'سیرجان', 'Sirjan', 141200, 320, 372, 9.8, 74, 1.12, 44, 29, 81, 91, 1180, 712, 38, 4],
+['JRF', 'جیرفت', 'Jiroft', 130600, 300, 322, 15.6, 128, 1.86, 63, 41, 68, 79, 1210, 698, 41, 9],
+['BAM', 'بم', 'Bam', 55800, 130, 151, 11.2, 86, 1.31, 49, 33, 77, 88, 520, 308, 19, 2],
+['ANB', 'عنبرآباد', 'Anbarabad', 48900, 150, 158, 14.9, 141, 2.04, 66, 45, 66, 77, 540, 331, 22, 6],
+['RJN', 'رودبار جنوب', 'Rudbar-e Jonub', 47300, 120, 124, 16.8, 163, 2.31, 76, 52, 62, 72, 500, 319, 21, 7],
+['KHN', 'کهنوج', 'Kahnuj', 43600, 115, 128, 14.1, 118, 1.74, 61, 39, 71, 81, 450, 262, 18, 3],
+['BRD', 'بردسیر', 'Bardsir', 35100, 70, 84, 9.4, 69, 1.05, 42, 27, 82, 92, 300, 181, 12, 1],
+['RGN', 'ریگان', 'Rigan', 33400, 110, 116, 15.1, 136, 1.98, 70, 47, 65, 74, 360, 214, 16, 4],
+['BFT', 'بافت', 'Baft', 31800, 45, 58, 9.1, 72, 1.09, 47, 30, 80, 90, 270, 159, 11, 1],
+['MNJ', 'منوجان', 'Manujan', 30600, 95, 104, 14.4, 124, 1.83, 64, 43, 69, 76, 330, 196, 14, 3],
+['QGJ', 'قلعه‌گنج', 'Qaleh Ganj', 30100, 85, 90, 15.9, 149, 2.12, 72, 49, 64, 73, 320, 197, 15, 4],
+['FHJ', 'فهرج', 'Fahraj', 26500, 70, 79, 12.6, 98, 1.46, 55, 36, 74, 84, 240, 141, 10, 1],
+['NRM', 'نرماشیر', 'Narmashir', 24100, 70, 77, 12.9, 102, 1.52, 57, 37, 73, 83, 230, 133, 9, 2],
+['ARZ', 'ارزوئیه', 'Arzuiyeh', 17300, 55, 63, 11.7, 93, 1.38, 52, 34, 76, 86, 190, 112, 8, 1],
+['FRB', 'فاریاب', 'Faryab', 15400, 45, 50, 13.2, 109, 1.61, 59, 40, 72, 82, 170, 99, 8, 2],
+['RBR', 'رابر', 'Rabor', 13700, 20, 27, 8.7, 66, 0.98, 46, 28, 83, 93, 130, 74, 6, 0]];
+
+
+export const regions: Region[] = ROWS.map(
+  ([id, fa, en, customers, peakMW, capacityMW, lossPct, saidi, saifi, restoreMin, responseHrs, satisfaction, collectionPct, budgetBn, spentBn, projects, delayedProjects]) => {
+    // unplanned MV/LV interruptions per month scale with customers and SAIFI
+    const outages = Math.round(customers * saifi / 1000 * 1.6);
+    return {
+      id,
+      name: { fa, en },
+      customers,
+      peakMW,
+      capacityMW,
+      lossPct,
+      saidi,
+      saifi,
+      outages,
+      outageMinutes: outages * restoreMin,
+      faults: Math.round(outages * 0.72),
+      restoreMin,
+      requests: Math.round(customers * 0.018),
+      responseHrs,
+      complaints: Math.round(customers * (0.0018 + (80 - satisfaction) * 0.00008)),
+      satisfaction,
+      budgetBn,
+      spentBn,
+      collectionPct,
+      projects,
+      delayedProjects
+    };
+  }
+);
 
 export const regionById = (id: string) => regions.find((r) => r.id === id)!;
 

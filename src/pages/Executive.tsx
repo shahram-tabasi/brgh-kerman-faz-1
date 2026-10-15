@@ -15,6 +15,7 @@ import {
   BellRingIcon,
   BriefcaseIcon,
   GaugeIcon,
+  HelpCircleIcon,
   LineChartIcon,
   MapIcon,
   PowerOffIcon,
@@ -33,8 +34,8 @@ import { useLocale } from '../contexts/LocaleContext';
 import { kpiById, kpiLevel, kpis, levelOf } from '../data/kpis';
 import { company, regionScore, regions } from '../data/regions';
 import { alerts, categoryLabel } from '../data/alerts';
-import { projectTotals } from '../data/projects';
-import { incidents } from '../data/operations';
+import { projectTotals, projects } from '../data/projects';
+import { incidents, sensitiveAssets } from '../data/operations';
 import { MONTHS } from '../data/common';
 import type { Level, Region } from '../types';
 import { levelColor } from '../utils/format';
@@ -177,6 +178,8 @@ export function Executive() {
         {EXEC_KPIS.map((id) => <KpiMasterTile key={id} kpi={kpiById(id)} />)}
       </div>
 
+      <ManagementQuestions />
+
       <div className="grid grid-cols-1 gap-3 xl:grid-cols-12">
         <RegionalPanel />
         <Panel
@@ -244,7 +247,7 @@ export function Executive() {
         </Panel>
       </div>
 
-      <Lineage ids={['SRC-OMS', 'SRC-SCADA', 'SRC-CIS', 'SRC-BILL', 'SRC-FIN', 'SRC-PMIS', 'SRC-CRM', 'SRC-MDM']} />
+      <Lineage ids={['SRC-OMS', 'SRC-SCADA', 'SRC-CIS', 'SRC-FIN', 'SRC-PMIS', 'SRC-APP', 'SRC-MDM']} />
     </>);
 
 }
@@ -376,6 +379,40 @@ function RegionalPanel() {
             )}
           </tbody>
         </table>
+      </div>
+    </Panel>);
+
+}
+
+/** Spec §2-1: the management questions that used to need several systems — each answered here in one click. */
+function ManagementQuestions() {
+  const { tr, n, pct } = useLocale();
+  const overloaded = sensitiveAssets.filter((a) => a.loadingPct >= 90).length;
+  const weakRegions = regions.filter((r) => regionScore(r) < 65).length;
+  const reliabilityProjects = projects.filter((p) => ['PRJ-101', 'PRJ-103', 'PRJ-107'].includes(p.id));
+  const qs: {q: [string, string];a: string;to: string;}[] = [
+  { q: ['وضعیت فعلی بار شبکه چیست؟', 'What is the current network load?'], a: `${n(company.peakMW)} / ${n(company.capacityMW)} ${tr('مگاوات', 'MW')} (${pct(company.peakMW / company.capacityMW * 100, 0)})`, to: '/operations' },
+  { q: ['کدام تجهیزات با ریسک یا اضافه‌بار مواجه‌اند؟', 'Which assets are at risk or overloaded?'], a: `${n(overloaded)} ${tr('تجهیز بالای ۹۰٪ بار', 'assets above 90% load')}`, to: '/operations' },
+  { q: ['وضعیت خاموشی‌ها چگونه است؟', 'What is the outage situation?'], a: `SAIDI ${n(company.saidi)} · SAIFI ${n(company.saifi, 2)}`, to: '/operations' },
+  { q: ['عملکرد مناطق نسبت به اهداف چگونه است؟', 'How do regions perform vs targets?'], a: `${n(weakRegions)} ${tr('مدیریت زیر امتیاز ۶۵', 'units below score 65')}`, to: '/drilldown' },
+  { q: ['چه میزان از پروژه‌های مصوب پیشرفت داشته‌اند؟', 'How far have approved projects progressed?'], a: `${pct(projectTotals.avgPhysical, 0)} ${tr('در برابر برنامه', 'vs plan')} ${pct(projectTotals.avgPlanned, 0)}`, to: '/projects' },
+  { q: ['انحراف زمانی و مالی پروژه‌ها چقدر است؟', 'What are project time & cost variances?'], a: `${n(company.delayedProjects)} ${tr('پروژه با تأخیر', 'delayed')} · ${tr('هزینه', 'cost')} ${pct(kpiById('KPI-09').value, 1)}`, to: '/projects' },
+  { q: ['کدام پروژه‌ها بیشترین اثر بر قابلیت اطمینان دارند؟', 'Which projects most affect reliability?'], a: reliabilityProjects.map((p) => p.id).join('، '), to: '/projects' },
+  { q: ['وضعیت شاخص‌های بهره‌برداری، مالی، مشترکین و منابع انسانی؟', 'Status of operations, finance, customer & HR KPIs?'], a: `${n(kpis.filter((k) => kpiLevel(k) !== 'OK').length)} ${tr('شاخص خارج از حد مطلوب', 'KPIs off target')}`, to: '/kpi' }];
+
+  return (
+    <Panel
+      title={tr('پرسش‌های مدیریتی — پاسخ در یک نگاه', 'Management questions — answered at a glance')}
+      subtitle={tr('پرسش‌های بند ۲-۱ شرح خدمات که پیش‌تر نیازمند استخراج دستی از چند سامانه بود', 'The §2-1 questions that previously required manual extraction from several systems')}
+      icon={<HelpCircleIcon size={14} />}>
+      
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4">
+        {qs.map((x) =>
+        <Link key={x.q[1]} to={x.to} className="group border border-line bg-ink-800/40 px-2.5 py-2 transition-colors duration-150 hover:border-elec-400/40">
+            <p className="text-[12px] text-slate-300 group-hover:text-elec-300">{tr(x.q[0], x.q[1])}</p>
+            <p className="mt-1 font-mono text-[12px] text-slate-100">{x.a}</p>
+          </Link>
+        )}
       </div>
     </Panel>);
 

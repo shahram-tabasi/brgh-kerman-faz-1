@@ -26,7 +26,7 @@ import { GRID_STROKE, Legend, PALETTE, useAxes } from '../components/charts/Char
 import { useLocale } from '../contexts/LocaleContext';
 import { contractLabel, deputies, projectTotals, projects } from '../data/projects';
 import type { ContractStatus, Project } from '../data/projects';
-import { regionById } from '../data/regions';
+import { company, regionById } from '../data/regions';
 import { kpiById, kpiLevel } from '../data/kpis';
 import { levelColor } from '../utils/format';
 
@@ -107,11 +107,11 @@ export function Projects() {
       
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 2xl:grid-cols-8">
-        <KpiTile label={tr('پروژه‌های مصوب', 'Approved projects')} value={n(projectTotals.count)} unit={`${n(projectTotals.budgetBn)} ${tr('میلیارد ریال', 'bn IRR')}`} tone="elec" />
+        <KpiTile label={tr('پروژه‌های مصوب ۱۴۰۵', 'Approved projects 1405')} value={n(company.projects)} unit={`${n(projectTotals.count)} ${tr('پروژه شاخص در فهرست زیر', 'flagship listed below')}`} tone="elec" />
         <KpiTile label={tr('پیشرفت فیزیکی', 'Physical progress')} value={pct(projectTotals.avgPhysical, 0)} unit={`${tr('برنامه', 'plan')} ${pct(projectTotals.avgPlanned, 0)}`} gauge={projectTotals.avgPhysical} tone="elec" />
         <KpiTile label={tr('پیشرفت مالی', 'Financial progress')} value={pct(projectTotals.avgFinancial, 0)} gauge={projectTotals.avgFinancial} tone="forecast" />
         <KpiTile label="SPI" value={pct(kpiById('KPI-07').value, 1)} level={kpiLevel(kpiById('KPI-07'))} trend={kpiById('KPI-07').trend} to="/kpi?id=KPI-07" />
-        <KpiTile label={tr('پروژه‌های دارای تأخیر', 'Delayed projects')} value={n(projectTotals.delayed)} unit={`${tr('از', 'of')} ${n(projectTotals.count)}`} tone="warn" />
+        <KpiTile label={tr('پروژه‌های دارای تأخیر', 'Delayed projects')} value={n(company.delayedProjects)} unit={`${tr('از', 'of')} ${n(company.projects)} · ${tr('شاخص', 'flagship')} ${n(projectTotals.delayed)}`} tone="warn" />
         <KpiTile label={tr('پروژه‌های بحرانی', 'Critical projects')} value={n(projectTotals.critical)} tone="crit" />
         <KpiTile label={tr('انحراف هزینه', 'Cost variance')} value={pct(kpiById('KPI-09').value, 1)} level={kpiLevel(kpiById('KPI-09'))} trend={kpiById('KPI-09').trend} to="/kpi?id=KPI-09" />
         <KpiTile label={tr('تحقق اهداف', 'Goals achieved')} value={pct(projectTotals.goalsMet / projectTotals.goalsTotal * 100, 0)} unit={`${n(projectTotals.goalsMet)} / ${n(projectTotals.goalsTotal)}`} gauge={projectTotals.goalsMet / projectTotals.goalsTotal * 100} tone="ok" />
@@ -171,7 +171,7 @@ export function Projects() {
       </div>
 
       <Panel
-        title={tr('فهرست پروژه‌ها', 'Project register')}
+        title={tr('پروژه‌های شاخص برنامه ۱۴۰۵', 'Flagship projects — 1405 programme')}
         icon={<FlagIcon size={14} />}
         bodyClassName="p-0"
         actions={
@@ -225,8 +225,8 @@ export function Projects() {
           <Panel className="xl:col-span-4" title={tr('خلاصه پروژه', 'Project summary')} icon={<TargetIcon size={14} />}>
             <dl className="space-y-1.5 text-[12px]">
               {[
-            [tr('بودجه', 'Budget'), `${n(sel.budgetBn)} ${tr('میلیارد ریال', 'bn IRR')}`],
-            [tr('هزینه‌شده', 'Spent'), `${n(sel.spentBn)} ${tr('میلیارد ریال', 'bn IRR')}`],
+            [tr('بودجه', 'Budget'), `${n(sel.budgetBn)} ${tr('میلیارد تومان', 'bn toman')}`],
+            [tr('هزینه‌شده', 'Spent'), `${n(sel.spentBn)} ${tr('میلیارد تومان', 'bn toman')}`],
             [tr('پیشرفت فیزیکی', 'Physical'), pct(sel.physical, 0)],
             [tr('پیشرفت مالی', 'Financial'), pct(sel.financial, 0)],
             [tr('انحراف زمانی', 'Delay'), `${n(sel.delayDays)} ${tr('روز', 'days')}`],

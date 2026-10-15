@@ -11,7 +11,7 @@ export interface Tx {
 
 export type Direction = 'higher' | 'lower';
 
-export type KpiCategory = 'executive' | 'operations' | 'projects' | 'finance' | 'customers' | 'data';
+export type KpiCategory = 'executive' | 'operations' | 'projects' | 'finance' | 'customers' | 'data' | 'platform' | 'management';
 
 export interface Kpi {
   id: string;
@@ -20,6 +20,8 @@ export interface Kpi {
   formula: string;
   category: KpiCategory;
   sources: string[];
+  /** required data elements (Data Dictionary ids) */
+  data?: string[];
   period: Tx;
   unit: Tx;
   direction: Direction;

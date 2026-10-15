@@ -7,8 +7,11 @@ import {
   ClipboardCheckIcon,
   CrownIcon,
   DatabaseIcon,
+  FileTextIcon,
+  FlaskConicalIcon,
   GitForkIcon,
   LayersIcon,
+  ListChecksIcon,
   PanelLeftCloseIcon,
   PanelLeftOpenIcon,
   TargetIcon,
@@ -45,7 +48,8 @@ const GROUPS: {fa: string;en: string;items: Item[];}[] = [
   items: [
   { to: '/drilldown', fa: 'شکست مسئله (Drill-down)', en: 'Drill-down analysis', icon: <GitForkIcon size={15} /> },
   { to: '/alerts', fa: 'هشدار و استثناها', en: 'Alerts & exceptions', icon: <BellRingIcon size={15} />, badge: openAlerts },
-  { to: '/kpi', fa: 'شناسنامه شاخص‌ها (KPI Master)', en: 'KPI Master', icon: <TargetIcon size={15} /> }]
+  { to: '/kpi', fa: 'شناسنامه شاخص‌ها (KPI Master)', en: 'KPI Master', icon: <TargetIcon size={15} /> },
+  { to: '/reports', fa: 'گزارش‌های مدیریتی', en: 'Management reports', icon: <FileTextIcon size={15} /> }]
 
 },
 {
@@ -56,6 +60,13 @@ const GROUPS: {fa: string;en: string;items: Item[];}[] = [
   { to: '/dictionary', fa: 'فرهنگ داده', en: 'Data dictionary', icon: <BookOpenIcon size={15} /> },
   { to: '/architecture', fa: 'معماری و مراحل اجرا', en: 'Architecture & roadmap', icon: <LayersIcon size={15} /> }]
 
+},
+{
+  fa: 'پروژه', en: 'Project',
+  items: [
+  { to: '/pilot', fa: 'اجرای Pilot', en: 'Pilot', icon: <FlaskConicalIcon size={15} /> },
+  { to: '/traceability', fa: 'انطباق با شرح خدمات', en: 'Scope compliance', icon: <ListChecksIcon size={15} /> }]
+
 }];
 
 
@@ -64,7 +75,7 @@ export function Sidebar({ collapsed, onToggle }: {collapsed: boolean;onToggle: (
   return (
     <nav
       aria-label={tr('ناوبری اصلی', 'Main navigation')}
-      className={`flex shrink-0 flex-col border-e border-line bg-ink-900/95 transition-[width] duration-200 ease-out ${
+      className={`flex shrink-0 flex-col border-e border-line bg-ink-900/95 print:hidden transition-[width] duration-200 ease-out ${
       collapsed ? 'w-[52px]' : 'w-[220px]'}`
       }>
       

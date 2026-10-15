@@ -9,7 +9,7 @@ export function AppShell({ children }: {children: React.ReactNode;}) {
   return (
     <div className="flex h-full w-full flex-col overflow-hidden bg-ink-950 text-slate-200">
       <TopBar />
-      <div className="flex items-center gap-2 border-b border-line bg-signal-warn/[0.06] px-4 py-1">
+      <div className="flex items-center gap-2 border-b border-line bg-signal-warn/[0.06] px-4 py-1 print:hidden">
         <span className="h-1.5 w-1.5 shrink-0 bg-signal-warn" />
         <p className="truncate text-2xs uppercase tracking-[0.12em] text-signal-warn/90">
           {tr(

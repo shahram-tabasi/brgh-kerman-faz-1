@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { CheckCircle2Icon, CircleDashedIcon, LayersIcon, ListOrderedIcon, LoaderIcon, PackageCheckIcon, RocketIcon, ShieldCheckIcon } from 'lucide-react';
 import { PageHeader } from '../components/common/PageHeader';
 import { Panel } from '../components/common/Panel';
@@ -22,33 +23,33 @@ const LAYERS: {fa: string;en: string;tech: string;level: Level;}[] = [
 
 const PHASES: {fa: string;en: string;items: [string, string][];status: Phase;progress: number;}[] = [
 { fa: 'شناخت و نیازسنجی', en: 'Discovery & needs analysis', status: 'DONE', progress: 100, items: [['جلسات با مدیران', 'Executive sessions'], ['مصاحبه با واحدها', 'Unit interviews'], ['شناسایی سامانه‌ها', 'System inventory'], ['استخراج نیازهای مدیریتی', 'Management needs']] },
-{ fa: 'ارزیابی داده و سامانه‌ها', en: 'Data & system assessment', status: 'DONE', progress: 100, items: [['Data Profiling', 'Data profiling'], ['بررسی کیفیت و مغایرت‌ها', 'Quality & discrepancies'], ['داده‌های بحرانی', 'Critical data'], ['روش‌های اتصال', 'Connection methods']] },
-{ fa: 'طراحی معماری و مدل اطلاعات', en: 'Architecture & information model', status: 'DONE', progress: 100, items: [['طراحی معماری', 'Architecture'], ['Data Model', 'Data model'], ['Data Dictionary', 'Data dictionary'], ['طراحی KPI و قواعد کیفیت', 'KPI & quality rules']] },
-{ fa: 'پیاده‌سازی لایه یکپارچه‌سازی', en: 'Integration layer build', status: 'ACTIVE', progress: 70, items: [['ارتباط با منابع', 'Source connectors'], ['ETL/ELT', 'ETL/ELT'], ['Staging', 'Staging'], ['کنترل خطا', 'Error handling']] },
-{ fa: 'پیاده‌سازی کیفیت داده', en: 'Data quality implementation', status: 'ACTIVE', progress: 55, items: [['اعتبارسنجی', 'Validation'], ['تطبیق و رفع تکرار', 'Reconcile & de-dupe'], ['گزارش کیفیت', 'Quality report'], ['کنترل مغایرت', 'Discrepancy control']] },
-{ fa: 'طراحی و پیاده‌سازی داشبورد', en: 'Dashboard design & build', status: 'ACTIVE', progress: 60, items: [['طراحی UX', 'UX design'], ['داشبورد مدیریت ارشد و واحدها', 'Executive & unit dashboards'], ['KPI، گزارش، Drill-down', 'KPI, reports, drill-down'], ['هشدارها', 'Alerts']] },
+{ fa: 'ارزیابی داده و سامانه‌ها', en: 'Data & system assessment', status: 'ACTIVE', progress: 70, items: [['Data Profiling', 'Data profiling'], ['بررسی کیفیت و مغایرت‌ها', 'Quality & discrepancies'], ['داده‌های بحرانی', 'Critical data'], ['روش‌های اتصال', 'Connection methods']] },
+{ fa: 'طراحی معماری و مدل اطلاعات', en: 'Architecture & information model', status: 'ACTIVE', progress: 35, items: [['طراحی معماری', 'Architecture'], ['Data Model', 'Data model'], ['Data Dictionary', 'Data dictionary'], ['طراحی KPI و قواعد کیفیت', 'KPI & quality rules']] },
+{ fa: 'پیاده‌سازی لایه یکپارچه‌سازی', en: 'Integration layer build', status: 'PLANNED', progress: 0, items: [['ارتباط با منابع', 'Source connectors'], ['ETL/ELT', 'ETL/ELT'], ['Staging', 'Staging'], ['کنترل خطا', 'Error handling']] },
+{ fa: 'پیاده‌سازی کیفیت داده', en: 'Data quality implementation', status: 'PLANNED', progress: 0, items: [['اعتبارسنجی', 'Validation'], ['تطبیق و رفع تکرار', 'Reconcile & de-dupe'], ['گزارش کیفیت', 'Quality report'], ['کنترل مغایرت', 'Discrepancy control']] },
+{ fa: 'طراحی و پیاده‌سازی داشبورد', en: 'Dashboard design & build', status: 'ACTIVE', progress: 25, items: [['نمونه اولیه (همین نرم‌افزار) برای نیازسنجی', 'Prototype (this software) for requirements'], ['طراحی UX', 'UX design'], ['داشبورد مدیریت ارشد و واحدها', 'Executive & unit dashboards'], ['KPI، گزارش، Drill-down', 'KPI, reports, drill-down'], ['هشدارها', 'Alerts']] },
 { fa: 'آزمون و Pilot', en: 'Testing & pilot', status: 'PLANNED', progress: 0, items: [['آزمون فنی، داده و عملکرد', 'Technical, data & performance tests'], ['اعتبارسنجی خروجی‌ها', 'Output validation'], ['اجرای Pilot', 'Pilot run']] },
 { fa: 'استقرار و آموزش', en: 'Deployment & training', status: 'PLANNED', progress: 0, items: [['استقرار نهایی', 'Final deployment'], ['آموزش کاربران', 'User training'], ['مستندسازی و تحویل', 'Documentation & handover'], ['پشتیبانی اولیه', 'Initial support']] }];
 
 
 const DELIVERABLES: [string, string, string, Phase][] = [
-['شناخت وضع موجود', 'Current-state assessment', 'As-Is Report', 'DONE'],
-['شناسایی منابع اطلاعاتی', 'Data source discovery', 'Data Source Map', 'DONE'],
-['تحلیل کیفیت داده', 'Data quality analysis', 'Data Quality Report', 'DONE'],
-['طراحی مدل اطلاعات', 'Information model design', 'Unified Data Model', 'DONE'],
-['استانداردسازی', 'Standardisation', 'Data Dictionary', 'DONE'],
-['یکپارچه‌سازی', 'Integration', 'Integration Layer', 'ACTIVE'],
-['پاک‌سازی و تطبیق', 'Cleansing & reconciliation', 'Cleansed Data', 'ACTIVE'],
-['تعریف شاخص‌ها', 'KPI definition', 'KPI Master', 'DONE'],
-['مخزن اطلاعاتی', 'Information store', 'Unified Data Layer', 'ACTIVE'],
+['شناخت وضع موجود', 'Current-state assessment', 'As-Is Report', 'ACTIVE'],
+['شناسایی منابع اطلاعاتی', 'Data source discovery', 'Data Source Map', 'ACTIVE'],
+['تحلیل کیفیت داده', 'Data quality analysis', 'Data Quality Report', 'ACTIVE'],
+['طراحی مدل اطلاعات', 'Information model design', 'Unified Data Model', 'ACTIVE'],
+['استانداردسازی', 'Standardisation', 'Data Dictionary', 'ACTIVE'],
+['یکپارچه‌سازی', 'Integration', 'Integration Layer', 'PLANNED'],
+['پاک‌سازی و تطبیق', 'Cleansing & reconciliation', 'Cleansed Data', 'PLANNED'],
+['تعریف شاخص‌ها', 'KPI definition', 'KPI Master', 'ACTIVE'],
+['مخزن اطلاعاتی', 'Information store', 'Unified Data Layer', 'PLANNED'],
 ['داشبورد مدیریت ارشد', 'Executive dashboard', 'Executive Dashboard', 'ACTIVE'],
 ['داشبوردهای تخصصی', 'Specialist dashboards', 'Operational Dashboards', 'ACTIVE'],
-['گزارش‌گیری', 'Reporting', 'Management Reports', 'PLANNED'],
+['گزارش‌گیری', 'Reporting', 'Management Reports', 'ACTIVE'],
 ['Drill-down', 'Drill-down', 'Hierarchical Analysis', 'ACTIVE'],
 ['هشدار', 'Alerting', 'Alert & Exception Management', 'ACTIVE'],
-['Pilot', 'Pilot', 'Pilot Implementation', 'PLANNED'],
+['Pilot', 'Pilot', 'Pilot Implementation', 'ACTIVE'],
 ['آموزش', 'Training', 'Training', 'PLANNED'],
-['مستندسازی', 'Documentation', 'Technical/User Documentation', 'PLANNED'],
+['مستندسازی', 'Documentation', 'Technical/User Documentation', 'ACTIVE'],
 ['برنامه توسعه', 'Development plan', 'Development Roadmap', 'PLANNED']];
 
 
@@ -72,7 +73,7 @@ const PHASE_UI: Record<Phase, {icon: JSX.Element;tone: 'ok' | 'elec' | 'slate';f
 };
 
 export function Architecture() {
-  const { tr, n, pct } = useLocale();
+  const { tr, n } = useLocale();
   return (
     <>
       <PageHeader
@@ -137,7 +138,7 @@ export function Architecture() {
               )}
             </div>
             <p className="mt-2 text-2xs text-slate-500">
-              {tr('منابع منتخب Pilot', 'Pilot sources')}: {sources.filter((s) => s.pilot).map((s) => s.id.replace('SRC-', '')).join(' · ')}
+              <Link to="/pilot" className="text-elec-300 hover:underline">{tr('جزئیات کامل Pilot ←', 'Full pilot details →')}</Link> · {tr('منابع منتخب Pilot', 'Pilot sources')}: {sources.filter((s) => s.pilot).map((s) => s.id.replace('SRC-', '')).join(' · ')}
             </p>
           </Panel>
         </div>
@@ -168,7 +169,7 @@ export function Architecture() {
             </table>
           </div>
           <p className="border-t border-line px-3 py-2 text-2xs text-slate-500">
-            {tr('پیشرفت کلی خروجی‌ها', 'Overall deliverable progress')}: <span className="font-mono text-elec-300">{pct(DELIVERABLES.filter((d) => d[3] === 'DONE').length / DELIVERABLES.length * 100, 0)}</span> {tr('تکمیل', 'complete')}
+            {tr('خروجی‌ها', 'Deliverables')}: <span className="font-mono text-elec-300">{n(DELIVERABLES.filter((d) => d[3] === 'ACTIVE').length)}</span> {tr('در حال تهیه', 'in progress')} · <span className="font-mono text-slate-400">{n(DELIVERABLES.filter((d) => d[3] === 'PLANNED').length)}</span> {tr('برنامه‌ریزی‌شده (مطابق برنامه Pilot — هفته ۶ از ۱۶)', 'planned (per pilot plan — week 6 of 16)')}
           </p>
         </Panel>
 

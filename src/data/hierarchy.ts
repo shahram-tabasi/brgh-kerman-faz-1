@@ -18,22 +18,31 @@ export interface DrillNode {
 
 export const levelLabel: Record<NodeLevel, Tx> = {
   company: { fa: 'شرکت', en: 'Company' },
-  region: { fa: 'منطقه', en: 'Region' },
+  region: { fa: 'منطقه (مدیریت شهرستان)', en: 'Region (county unit)' },
   district: { fa: 'ناحیه', en: 'District' },
   feeder: { fa: 'فیدر', en: 'Feeder' },
   equipment: { fa: 'تجهیز', en: 'Equipment' },
   event: { fa: 'رخداد', en: 'Event' }
 };
 
+/** Districts (نواحی) per county unit — named after the main towns served. */
 const DISTRICTS: Record<string, [string, string][]> = {
-  JRF: [['مرکزی', 'Central'], ['اسلام‌آباد', 'Eslamabad'], ['ساردوئیه', 'Sarduiyeh'], ['جبالبارز', 'Jebalbarez']],
-  ANB: [['مرکزی', 'Central'], ['اسماعیلی', 'Esmaili'], ['جبالبارز جنوبی', 'South Jebalbarez']],
-  KHN: [['مرکزی', 'Central'], ['کوهستان', 'Kuhestan']],
-  RJN: [['مرکزی', 'Central'], ['جازموریان', 'Jazmurian'], ['نهضت‌آباد', 'Nehzatabad']],
-  QGJ: [['مرکزی', 'Central'], ['چاه‌دادخدا', 'Chah Dadkhoda']],
-  MNJ: [['مرکزی', 'Central'], ['آسمینون', 'Asminun']],
-  FRB: [['مرکزی', 'Central'], ['حتکن', 'Hatkan']],
-  ARZ: [['مرکزی', 'Central'], ['صوغان', 'Soghan']]
+  SRJ: [['سیرجان (شهری)', 'Sirjan urban'], ['نجف‌شهر', 'Najafshahr'], ['پاریز', 'Pariz'], ['زیدآباد', 'Zeydabad']],
+  JRF: [['جیرفت (شهری)', 'Jiroft urban'], ['اسلام‌آباد', 'Eslamabad'], ['دلفارد', 'Delfard'], ['ساردوئیه', 'Sarduiyeh']],
+  BAM: [['بم (شهری)', 'Bam urban'], ['بروات', 'Baravat'], ['دهبکری', 'Dehbakri']],
+  ANB: [['عنبرآباد', 'Anbarabad'], ['دهوج', 'Dehuj'], ['مردهک', 'Mardehek']],
+  RJN: [['رودبار', 'Rudbar'], ['زهکلوت', 'Zehkalut'], ['جازموریان', 'Jazmurian']],
+  KHN: [['کهنوج (شهری)', 'Kahnuj urban'], ['کهنوج (روستایی)', 'Kahnuj rural']],
+  BRD: [['بردسیر', 'Bardsir'], ['نگار', 'Negar'], ['لاله‌زار', 'Lalehzar']],
+  RGN: [['محمدآباد (ریگان)', 'Mohammadabad (Rigan)'], ['گنبکی', 'Gonbaki']],
+  BFT: [['بافت (شهری)', 'Baft urban'], ['بافت (روستایی)', 'Baft rural']],
+  MNJ: [['منوجان', 'Manujan'], ['نودژ', 'Nudezh']],
+  QGJ: [['قلعه‌گنج', 'Qaleh Ganj'], ['چاه‌دادخدا', 'Chah Dadkhoda']],
+  FHJ: [['فهرج', 'Fahraj'], ['فهرج (روستایی)', 'Fahraj rural']],
+  NRM: [['نرماشیر', 'Narmashir'], ['نظام‌شهر', 'Nezamshahr']],
+  ARZ: [['ارزوئیه', 'Arzuiyeh'], ['صوغان', 'Soghan']],
+  FRB: [['فاریاب', 'Faryab'], ['حتکن', 'Hatkan']],
+  RBR: [['رابر', 'Rabor'], ['هنزا', 'Hanza']]
 };
 
 const EQUIP: [string, string, string][] = [

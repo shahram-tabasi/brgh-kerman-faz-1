@@ -13,6 +13,9 @@ import { Sources } from './pages/Sources';
 import { Quality } from './pages/Quality';
 import { Dictionary } from './pages/Dictionary';
 import { Architecture } from './pages/Architecture';
+import { Reports } from './pages/Reports';
+import { Pilot } from './pages/Pilot';
+import { Traceability } from './pages/Traceability';
 
 export function App() {
   return (
@@ -32,6 +35,9 @@ export function App() {
             <Route path="/quality" element={<Quality />} />
             <Route path="/dictionary" element={<Dictionary />} />
             <Route path="/architecture" element={<Architecture />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/pilot" element={<Pilot />} />
+            <Route path="/traceability" element={<Traceability />} />
             <Route path="*" element={<Executive />} />
           </Routes>
         </AppShell>

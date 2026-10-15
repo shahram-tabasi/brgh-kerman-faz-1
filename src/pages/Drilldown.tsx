@@ -263,7 +263,7 @@ function ProjectDrill({ ids, go }: {ids: string[];go: (ids: string[]) => void;})
           <thead>
             <tr className="border-b border-line-strong text-2xs uppercase tracking-[0.08em] text-slate-500">
               <th className="px-2.5 py-2 text-start font-semibold">{tr('عنوان', 'Item')}</th>
-              {node.children[0]?.budget !== undefined && <th className="px-2.5 py-2 text-end font-semibold">{tr('بودجه (میلیارد ریال)', 'Budget (bn IRR)')}</th>}
+              {node.children[0]?.budget !== undefined && <th className="px-2.5 py-2 text-end font-semibold">{tr('بودجه (میلیارد تومان)', 'Budget (bn toman)')}</th>}
               <th className="w-[36%] px-2.5 py-2 text-start font-semibold">{tr('واقعی / برنامه', 'Actual / plan')}</th>
               {node.children[0]?.delay !== undefined && <th className="px-2.5 py-2 text-end font-semibold">{tr('تأخیر (روز)', 'Delay (d)')}</th>}
               <th className="px-2.5 py-2 font-semibold">{tr('وضعیت اجرا', 'Status')}</th>

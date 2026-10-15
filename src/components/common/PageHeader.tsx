@@ -16,7 +16,7 @@ export function PageHeader({
 }: {title: string;subtitle?: string;section?: string;actions?: React.ReactNode;}) {
   const { isFa } = useLocale();
   return (
-    <header className="flex flex-wrap items-end justify-between gap-3 border-b border-line pb-2.5">
+    <header className="flex flex-wrap items-end justify-between gap-3 border-b border-line pb-2.5 print:hidden">
       <div className="min-w-0">
         <div className="flex flex-wrap items-center gap-2">
           {section &&

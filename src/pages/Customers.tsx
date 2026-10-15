@@ -63,7 +63,7 @@ export function Customers() {
       </div>
 
       <div className="grid grid-cols-1 gap-3 xl:grid-cols-12">
-        <Panel className="xl:col-span-4" title={tr('ترکیب مشترکین', 'Customer mix')} icon={<UsersIcon size={14} />} accent="elec">
+        <Panel className="xl:col-span-4" title={tr('ترکیب مشترکین بر اساس تعرفه', 'Customers by tariff group')} subtitle={tr('ستون آخر: سهم از انرژی فروش — خانگی و کشاورزی ≈ ۸۰٪', 'Last column: share of energy sold — residential + agri ≈ 80%')} icon={<UsersIcon size={14} />} accent="elec">
           <div className="flex items-center gap-3">
             <div className="h-[200px] w-1/2">
               <ResponsiveContainer width="100%" height="100%">
@@ -81,6 +81,7 @@ export function Customers() {
                   <span className="h-2.5 w-2.5" style={{ background: c.color }} />
                   <span className="flex-1 text-slate-300">{tx(c.name)}</span>
                   <span className="font-mono text-slate-400">{n(Math.round(c.count * share))}</span>
+                  <span className="w-10 text-end font-mono text-2xs text-slate-500" title={tr('سهم از انرژی فروش', 'share of energy sold')}>{pct(c.energyPct, 0)}</span>
                 </li>
               )}
             </ul>
@@ -222,7 +223,7 @@ export function Customers() {
         </Panel>
       </div>
 
-      <Lineage ids={['SRC-CIS', 'SRC-CRM', 'SRC-121', 'SRC-BILL', 'SRC-MDM']} />
+      <Lineage ids={['SRC-CIS', 'SRC-APP', 'SRC-OMS', 'SRC-MDM']} />
     </>);
 
 }

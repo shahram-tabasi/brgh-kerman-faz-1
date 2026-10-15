@@ -13,7 +13,7 @@ export function TopBar() {
   const openCritical = alerts.filter((a) => a.state !== 'RESOLVED' && a.level === 'CRIT').length;
 
   return (
-    <header className="relative z-20 shrink-0 border-b border-line bg-ink-900/95">
+    <header className="relative z-20 shrink-0 border-b border-line bg-ink-900/95 print:hidden">
       <div className="flex items-center gap-4 px-4 py-2">
         {/* identity */}
         <Link to="/" className="flex min-w-0 items-center gap-2.5">

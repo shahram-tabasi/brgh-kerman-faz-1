@@ -6,13 +6,12 @@ import { KpiMasterTile, KpiTile } from '../components/common/KpiTile';
 import { LevelBadge, LevelDot, Tag } from '../components/common/Badge';
 import { Meter } from '../components/common/Gauge';
 import { useLocale } from '../contexts/LocaleContext';
-import { DIMENSIONS, dimensionLabel, sourceScore, sources } from '../data/sources';
-import type { Connection, DataSource, QualityGrade } from '../data/sources';
+import { CONNECTIONS, DIMENSIONS, connectionLabel, dimensionLabel, groupLabel, sourceScore, sources } from '../data/sources';
+import type { DataSource, QualityGrade, SourceGroup } from '../data/sources';
 import { kpiById } from '../data/kpis';
 import type { Level } from '../types';
 import { levelColor } from '../utils/format';
 
-const CONN: Connection[] = ['API', 'WebService', 'Database', 'File', 'Manual'];
 const GRADE: Record<QualityGrade, {fa: string;en: string;level: Level;}> = {
   GOOD: { fa: 'مناسب', en: 'Good', level: 'OK' },
   MEDIUM: { fa: 'متوسط', en: 'Medium', level: 'WARN' },
@@ -29,7 +28,7 @@ export function Sources() {
 
   const stages: {fa: string;en: string;level: Level;}[] = [
   { fa: 'منبع', en: 'Source', level: 'OK' },
-  { fa: `اتصال (${sel.connection})`, en: `Connect (${sel.connection})`, level: sel.connection === 'Manual' ? 'WARN' : 'OK' },
+  { fa: `اتصال (${connectionLabel(sel.connection).fa})`, en: `Connect (${connectionLabel(sel.connection).en})`, level: sel.connection === 'Manual' || sel.connection === 'ExcelCSV' ? 'WARN' : 'OK' },
   { fa: 'لایه Staging', en: 'Staging', level: sel.pipeline },
   { fa: 'کنترل کیفیت', en: 'Quality checks', level: sourceScore(sel) >= 90 ? 'OK' : sourceScore(sel) >= 80 ? 'WARN' : 'CRIT' },
   { fa: 'لایه داده یکپارچه', en: 'Unified layer', level: sel.pipeline === 'CRIT' ? 'CRIT' : 'OK' }];
@@ -57,22 +56,23 @@ export function Sources() {
 
       <div className="grid grid-cols-1 gap-3 xl:grid-cols-12">
         <Panel className="xl:col-span-3" title={tr('روش‌های اتصال', 'Connection methods')} icon={<PlugIcon size={14} />}>
-          <ul className="space-y-2.5">
-            {CONN.map((c) => {
-              const cnt = sources.filter((s) => s.connection === c).length;
+          <ul className="space-y-2">
+            {CONNECTIONS.map((c) => {
+              const cnt = sources.filter((s) => s.connection === c.id).length;
+              const color = c.id === 'Manual' ? '#f59e0b' : c.id === 'ExcelCSV' || c.id === 'FileExchange' ? '#a78bfa' : '#38bdf8';
               return (
-                <li key={c}>
+                <li key={c.id}>
                   <div className="flex justify-between text-[12px]">
-                    <span className="text-slate-300">{c === 'Manual' ? tr('ورود کنترل‌شده / دستی', 'Controlled manual entry') : c}</span>
+                    <span className="text-slate-300">{tr(c.fa, c.en)}</span>
                     <span className="font-mono text-slate-400">{n(cnt)}</span>
                   </div>
-                  <div className="mt-1"><Meter value={cnt} max={sources.length} color={c === 'Manual' ? '#f59e0b' : c === 'File' ? '#a78bfa' : '#38bdf8'} height={4} /></div>
+                  <div className="mt-1"><Meter value={cnt} max={sources.length} color={color} height={4} /></div>
                 </li>);
 
             })}
           </ul>
           <p className="mt-3 border-t border-line pt-2 text-2xs leading-relaxed text-slate-500">
-            {tr('سایر روش‌ها: فایل‌های Excel/CSV استانداردشده و سرویس‌های زمان‌بندی‌شده', 'Also: standardised Excel/CSV files and scheduled services')}
+            {tr('اتصال استاندارد = API، Web Service، Database یا سرویس زمان‌بندی‌شده (شاخص KPI-21)', 'Standard link = API, Web Service, Database or scheduled service (KPI-21)')}
           </p>
         </Panel>
 
@@ -119,7 +119,9 @@ export function Sources() {
                 </tr>
               </thead>
               <tbody>
-                {sources.map((s) =>
+                {(Object.keys(groupLabel) as SourceGroup[]).filter((g) => sources.some((s) => s.group === g)).flatMap((g) => [
+                <tr key={g} className="bg-ink-800/60"><td colSpan={6} className="px-2.5 py-1 text-2xs font-semibold text-slate-500">{tx(groupLabel[g])}</td></tr>,
+                ...sources.filter((s) => s.group === g).map((s) =>
                 <tr
                   key={s.id}
                   tabIndex={0}
@@ -134,11 +136,11 @@ export function Sources() {
                     </td>
                     <td className="whitespace-nowrap px-2.5 py-1.5 text-slate-400">{tx(s.owner)}</td>
                     <td className="whitespace-nowrap px-2.5 py-1.5 text-slate-400">{tx(s.frequency)}</td>
-                    <td className="px-2.5 py-1.5"><Tag tone={s.connection === 'Manual' ? 'warn' : 'slate'}>{s.connection}</Tag></td>
+                    <td className="px-2.5 py-1.5"><Tag tone={s.connection === 'Manual' || s.connection === 'ExcelCSV' ? 'warn' : 'slate'}>{tr(connectionLabel(s.connection).fa, connectionLabel(s.connection).en)}</Tag></td>
                     <td className="px-2.5 py-1.5"><LevelBadge level={GRADE[s.grade].level} size="xs" label={tr(GRADE[s.grade].fa, GRADE[s.grade].en)} /></td>
                     <td className="whitespace-nowrap px-2.5 py-1.5"><span className="flex items-center gap-1.5 text-2xs text-slate-400"><LevelDot level={s.pipeline} pulse />{tx(s.lastSync)}</span></td>
                   </tr>
-                )}
+                )])}
               </tbody>
             </table>
           </div>
@@ -155,7 +157,8 @@ export function Sources() {
             <dt className="text-slate-500">{tr('سطح دسترسی', 'Access')}</dt><dd className="text-slate-300">{tx(sel.access)}</dd>
             <dt className="text-slate-500">{tr('کیفیت داده', 'Data quality')}</dt><dd><LevelBadge level={GRADE[sel.grade].level} size="xs" label={tr(GRADE[sel.grade].fa, GRADE[sel.grade].en)} /></dd>
             <dt className="text-slate-500">{tr('مشکلات', 'Issues')}</dt><dd className="flex flex-wrap gap-1">{sel.problems.map((p) => <Tag key={p.en} tone="warn">{tx(p)}</Tag>)}</dd>
-            <dt className="text-slate-500">{tr('قابلیت اتصال', 'Connectivity')}</dt><dd className="font-mono text-slate-300">{sel.connection}</dd>
+            <dt className="text-slate-500">{tr('قابلیت اتصال', 'Connectivity')}</dt><dd className="text-slate-300">{tr(connectionLabel(sel.connection).fa, connectionLabel(sel.connection).en)}</dd>
+            <dt className="text-slate-500">{tr('دسته منبع (بند ۱۴)', 'Category (§14)')}</dt><dd className="text-slate-300">{tx(groupLabel[sel.group])}</dd>
           </dl>
           <div className="mt-3 space-y-1.5 border-t border-line pt-2">
             {DIMENSIONS.map((d) =>

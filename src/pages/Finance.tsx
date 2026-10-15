@@ -32,7 +32,7 @@ const PIE = [PALETTE.violet, PALETTE.elec, PALETTE.brandOrange, PALETTE.warn, PA
 export function Finance() {
   const { tr, tx, n, pct } = useLocale();
   const ax = useAxes();
-  const bn = tr('میلیارد ریال', 'bn IRR');
+  const bn = tr('میلیارد تومان', 'bn toman');
 
   const trend = useMemo(() => {
     let cp = 0;
@@ -191,7 +191,7 @@ export function Finance() {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={regions.map((r) => ({ name: tx(r.name), v: Math.round(r.spentBn / r.budgetBn * 100) }))} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
                 <CartesianGrid stroke={GRID_STROKE} vertical={false} />
-                <XAxis dataKey="name" {...ax.x} interval={0} tick={{ fill: '#64748b', fontSize: 9 }} />
+                <XAxis dataKey="name" {...ax.x} interval={0} tick={{ fill: '#64748b', fontSize: 8 }} angle={-40} textAnchor="end" height={46} />
                 <YAxis {...ax.y} domain={[0, 100]} />
                 <Tooltip content={<ChartTooltip unit="%" />} cursor={{ fill: 'rgba(148,163,184,0.06)' }} />
                 <ReferenceLine y={kpiById('KPI-10').target} stroke={PALETTE.ok} strokeDasharray="4 4" />
@@ -221,7 +221,7 @@ export function Finance() {
         </Panel>
       </div>
 
-      <Lineage ids={['SRC-FIN', 'SRC-BILL', 'SRC-PMIS', 'SRC-PROC', 'SRC-HR']} />
+      <Lineage ids={['SRC-FIN', 'SRC-CIS', 'SRC-PMIS', 'SRC-PROC', 'SRC-HR']} />
     </>);
 
 }

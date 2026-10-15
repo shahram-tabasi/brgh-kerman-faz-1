@@ -12,7 +12,7 @@ import {
   XAxis,
   YAxis } from
 'recharts';
-import { ActivityIcon, AlertTriangleIcon, CpuIcon, MapPinIcon, NetworkIcon, TimerIcon, WrenchIcon } from 'lucide-react';
+import { ActivityIcon, AlertTriangleIcon, CpuIcon, MapPinIcon, NetworkIcon, PowerOffIcon, TimerIcon, WrenchIcon } from 'lucide-react';
 import { PageHeader } from '../components/common/PageHeader';
 import { Panel } from '../components/common/Panel';
 import { KpiTile } from '../components/common/KpiTile';
@@ -25,7 +25,7 @@ import { ChartTooltip, GRID_STROKE, Legend, PALETTE, useAxes } from '../componen
 import { useLocale } from '../contexts/LocaleContext';
 import { company, regionById, regions } from '../data/regions';
 import { kpiById, levelOf } from '../data/kpis';
-import { faultCauses, incidents, opsTrend, riskPoints, sensitiveAssets } from '../data/operations';
+import { faultCauses, incidents, opsTrend, outageClasses, riskPoints, sensitiveAssets } from '../data/operations';
 import { MONTHS } from '../data/common';
 import { levelColor } from '../utils/format';
 import type { Incident, SensitiveAsset } from '../data/operations';
@@ -177,7 +177,7 @@ export function Operations() {
       </div>
 
       <div className="grid grid-cols-1 gap-3 xl:grid-cols-12">
-        <Panel className="xl:col-span-7" title={tr('روند خاموشی و خرابی', 'Outage & fault trend')} icon={<AlertTriangleIcon size={14} />} accent="warn">
+        <Panel className="xl:col-span-5" title={tr('روند خاموشی و خرابی', 'Outage & fault trend')} icon={<AlertTriangleIcon size={14} />} accent="warn">
           <div className="h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={trend} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
@@ -192,12 +192,26 @@ export function Operations() {
           </div>
           <Legend items={[{ label: tr('خاموشی', 'Outages'), color: PALETTE.crit }, { label: tr('خرابی تجهیزات', 'Equipment faults'), color: PALETTE.orange }]} />
         </Panel>
-        <Panel className="xl:col-span-5" title={tr('زمان رفع خاموشی به تفکیک منطقه', 'Restoration time by region')} icon={<TimerIcon size={14} />}>
+        <Panel className="xl:col-span-3" title={tr('طبقه‌بندی خاموشی‌ها', 'Outage classification')} subtitle={tr('سهم از دقایق خاموشی مشترکین', 'Share of customer-minutes')} icon={<PowerOffIcon size={14} />}>
+          <ul className="space-y-2.5">
+            {outageClasses.map((c) =>
+            <li key={c.name.en}>
+                <div className="flex justify-between gap-2 text-[12px]">
+                  <span className="text-slate-300">{tx(c.name)}</span>
+                  <span className="font-mono text-slate-400">{pct(c.share, 0)}</span>
+                </div>
+                <div className="mt-1"><Meter value={c.share} max={50} color={c.color} height={4} /></div>
+                {!c.inSaidi && <p className="mt-0.5 text-2xs text-slate-600">{tr('خارج از محاسبه SAIDI توزیع', 'excluded from distribution SAIDI')}</p>}
+              </li>
+            )}
+          </ul>
+        </Panel>
+        <Panel className="xl:col-span-4" title={tr('زمان رفع خاموشی به تفکیک منطقه', 'Restoration time by region')} icon={<TimerIcon size={14} />}>
           <div className="h-[220px]">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={regions.map((r) => ({ name: tx(r.name), v: r.restoreMin, id: r.id }))} margin={{ top: 8, right: 8, left: 8, bottom: 0 }}>
                 <CartesianGrid stroke={GRID_STROKE} vertical={false} />
-                <XAxis dataKey="name" {...ax.x} interval={0} tick={{ fill: '#64748b', fontSize: 9 }} />
+                <XAxis dataKey="name" {...ax.x} interval={0} tick={{ fill: '#64748b', fontSize: 8 }} angle={-40} textAnchor="end" height={46} />
                 <YAxis {...ax.y} />
                 <Tooltip content={<ChartTooltip unit={tr('دقیقه', 'min')} />} cursor={{ fill: 'rgba(148,163,184,0.06)' }} />
                 <ReferenceLine y={kpiById('KPI-05').target} stroke={PALETTE.ok} strokeDasharray="4 4" />
@@ -210,7 +224,7 @@ export function Operations() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <Legend items={[{ label: tr('هدف ۴۵ دقیقه', 'Target 45 min'), color: PALETTE.ok, dashed: true }, { label: tr('حد هشدار ۶۰', 'Warning 60'), color: PALETTE.warn, dashed: true }]} />
+          <Legend items={[{ label: `${tr('هدف', 'Target')} ${n(kpiById('KPI-05').target)} ${tr('دقیقه', 'min')}`, color: PALETTE.ok, dashed: true }, { label: `${tr('حد هشدار', 'Warning')} ${n(kpiById('KPI-05').warn)}`, color: PALETTE.warn, dashed: true }]} />
         </Panel>
       </div>
 
@@ -240,7 +254,7 @@ export function Operations() {
         <DataTable columns={assetCols} rows={assets} rowKey={(a) => a.id} dense />
       </Panel>
 
-      <Lineage ids={['SRC-SCADA', 'SRC-OMS', 'SRC-GIS', 'SRC-AM', 'SRC-121']} />
+      <Lineage ids={['SRC-SCADA', 'SRC-OMS', 'SRC-GIS', 'SRC-AM']} />
     </>);
 
 }

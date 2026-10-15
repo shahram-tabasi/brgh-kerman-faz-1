@@ -72,3 +72,11 @@ body {
 .recharts-wrapper svg {
   direction: ltr;
 }
+
+/* Print: only the report sheet, light background */
+@media print {
+  body, #root, main { background: #fff !important; color: #000 !important; height: auto !important; overflow: visible !important; }
+  .report-sheet { border: none !important; background: #fff !important; grid-column: 1 / -1 !important; }
+  .report-sheet * { color: #000 !important; border-color: #ccc !important; }
+  .grid-noise { background: none !important; }
+}
