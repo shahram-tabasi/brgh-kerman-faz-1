@@ -1,0 +1,82 @@
+/* @import url() FONT IMPORTS MUST ALWAYS BE AT THE VERY TOP OF THIS FILE, ABOVE THE TAILWIND IMPORTS — DO NOT DELETE THIS COMMENT */
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+/* CRITICAL: THE FOLLOWING TAILWIND IMPORTS MUST NEVER BE DELETED OR REORDERED — DO NOT DELETE THIS COMMENT */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* END TAILWIND IMPORTS — ALL OTHER CSS MUST GO BELOW THIS LINE */
+
+:root {
+  color-scheme: dark;
+}
+html,
+body,
+#root {
+  height: 100%;
+  width: 100%;
+}
+body {
+  margin: 0;
+  background: #04060b;
+  color: #e2e8f0;
+  -webkit-font-smoothing: antialiased;
+}
+/* Persian typography: slightly larger line-height + looser tracking for legibility */
+[dir='rtl'] {
+  letter-spacing: 0;
+}
+[dir='rtl'] .fa-body {
+  line-height: 1.85;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.22);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.38);
+}
+.grid-noise {
+  background-image: radial-gradient(rgba(148, 163, 184, 0.09) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* Brand accent: thin blue→orange band, echoing the company report template */
+.brand-band {
+  background: linear-gradient(90deg, #3b6fd1 0%, #8a7bb8 45%, #ee7f3b 100%);
+}
+.hex-mark {
+  clip-path: polygon(25% 3%, 75% 3%, 100% 50%, 75% 97%, 25% 97%, 0% 50%);
+}
+.recharts-cartesian-axis-tick-value {
+  font-family: inherit;
+}
+/* SVG text-anchor flips under dir=rtl; keep chart geometry LTR (axes are mirrored in code instead) */
+.recharts-wrapper svg {
+  direction: ltr;
+}
+
+/* Print: only the report sheet, light background */
+@media print {
+  body, #root, main { background: #fff !important; color: #000 !important; height: auto !important; overflow: visible !important; }
+  .report-sheet { border: none !important; background: #fff !important; grid-column: 1 / -1 !important; }
+  .report-sheet * { color: #000 !important; border-color: #ccc !important; }
+  .grid-noise { background: none !important; }
+}
